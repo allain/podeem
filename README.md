@@ -9,6 +9,7 @@ Based on the excellent work in [stage0](https://github.com/Freak613/stage0).
 ```js
 import h from 'podeem'
 
+// Define the template
 const View = h`<div>
   <h1>#message</h1>
   <button #greet>Greet</button>

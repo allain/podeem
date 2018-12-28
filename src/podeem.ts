@@ -1,14 +1,6 @@
-const TREE_WALKER = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null)
-let iteratorAvailable = true
 function createIterator(node: Node) {
-  TREE_WALKER.currentNode = node
-  iteratorAvailable = false
-  return () => {
-    if (iteratorAvailable) return null
-    const tmp = TREE_WALKER.currentNode
-    iteratorAvailable = !TREE_WALKER.nextNode()
-    return tmp
-  }
+  const i = document.createNodeIterator(node, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT)
+  return () => i.nextNode()
 }
 
 function extractRefName(node: Node): string | null {
@@ -35,12 +27,15 @@ function extractRefPath(node: Node): PathSegment[] {
   let segments = []
   let currentNode = nextNode()
 
-  for (let skip = 0; currentNode; currentNode = nextNode(), skip++) {
+  let skip = 0
+  while (currentNode) {
     const name = extractRefName(currentNode)
     if (name) {
       segments.push({ skip, name })
       skip = -1
     }
+    skip++
+    currentNode = nextNode()
   }
 
   return segments
