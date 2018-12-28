@@ -1,10 +1,14 @@
-export interface AugmentedNode extends Node {
-  collect(node?: Node): { [key: string]: AugmentedNode }
-}
-
+const TREE_WALKER = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null)
+let iteratorAvailable = true
 function createIterator(node: Node) {
-  const i = document.createNodeIterator(node, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT)
-  return () => i.nextNode()
+  TREE_WALKER.currentNode = node
+  iteratorAvailable = false
+  return () => {
+    if (iteratorAvailable) return null
+    const tmp = TREE_WALKER.currentNode
+    iteratorAvailable = !TREE_WALKER.nextNode()
+    return tmp
+  }
 }
 
 function extractRefName(node: Node): string | null {
@@ -15,11 +19,12 @@ function extractRefName(node: Node): string | null {
   }
 
   let nodeData = node.nodeValue
-  if (nodeData && nodeData[0] === '#') {
-    node.nodeValue = ""
-    return nodeData.slice(1)
+  if (!nodeData || nodeData[0] !== '#') {
+    return null
   }
-  return null
+
+  node.nodeValue = ''
+  return nodeData.slice(1)
 }
 
 type PathSegment = { skip: number, name: string }
@@ -27,8 +32,8 @@ type PathSegment = { skip: number, name: string }
 function extractRefPath(node: Node): PathSegment[] {
   const nextNode = createIterator(node)
 
-  let segments: PathSegment[] = []
-  let currentNode: Node | null = nextNode()
+  let segments = []
+  let currentNode = nextNode()
 
   for (let skip = 0; currentNode; currentNode = nextNode(), skip++) {
     const name = extractRefName(currentNode)
@@ -41,27 +46,10 @@ function extractRefPath(node: Node): PathSegment[] {
   return segments
 }
 
-function buildCollector(content: Node) {
-  const refPath = extractRefPath(content)
-  return (node?: Node) => {
-    const next = createIterator(node || content)
-
-    return refPath.reduce((refs: { [name: string]: Node | null }, segment: PathSegment) => {
-      let skip = segment.skip
-      while (skip-- > 0) {
-        next()
-      }
-      refs[segment.name] = next()
-      return refs
-    }, {})
-  }
-}
-
-
 // Reused across all h calls
 const compilerTemplate = document.createElement('template')
 
-export default function h(strings: TemplateStringsArray, ...args: any[]): AugmentedNode {
+export default function h(strings: TemplateStringsArray, ...args: any[]) {
   const template = String.raw(strings, ...args)
     .replace(/>\n+/g, '>')
     .replace(/\s+</g, '<')
@@ -74,7 +62,25 @@ export default function h(strings: TemplateStringsArray, ...args: any[]): Augmen
     throw new Error('invalid template')
   }
 
-  const result = content as AugmentedNode
-  result.collect = buildCollector(content)
+  const refPath = extractRefPath(content)
+
+  const result = () => content.cloneNode(true)
+
+  result.collect = function collect(node: Node) {
+    const next = createIterator(node)
+
+    const refs: { [name: string]: Node } = {}
+
+    for (let { skip, name } of refPath) {
+      while (skip-- > 0) next()
+
+      const el = next()
+      if (el !== null) {
+        refs[name] = el
+      }
+    }
+
+    return refs
+  }
   return result
 }

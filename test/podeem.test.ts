@@ -5,27 +5,46 @@ describe("podeem", () => {
     expect(h).toBeInstanceOf(Function)
   )
 
-  it('builds DOM nodes', () =>
-    expect(h`<h1>#Testing</h1>`).toBeInstanceOf(HTMLElement)
-  )
+  it('builds a Node factory function', () => {
+    const builder = h`<h1>#Testing</h1>`
+    expect(builder).toBeInstanceOf(Function)
+    expect(builder()).toBeInstanceOf(Node)
+  })
+
+  it('builds new instance on repeated calls', () => {
+    const builder = h`<h1>#Testing</h1>`
+    expect(builder()).not.toBe(builder())
+  })
 
   it('throws on invalid template', () =>
     expect(() => h``).toThrowError('invalid template')
   )
 
-  it('augments node with collect method', () => {
-    const augmented = h`<h1 #arg>#body</h1>`
-    expect(augmented.collect).toBeInstanceOf(Function)
-    const collected = augmented.collect()
-    expect(Object.keys(collected)).toEqual(['arg', 'body'])
-    expect(collected.arg.nodeName).toEqual('H1')
-    expect(collected.body.nodeName).toEqual('#text')
+  it('builder exposes collect method', () => {
+    const builder = h`<h1 #arg>#body</h1>`
+    expect(builder.collect).toBeInstanceOf(Function)
   })
 
-  it('handles collect without slots', () => {
-    const augmented = h`<h1>Static</h1>`
-    expect(augmented.collect).toBeInstanceOf(Function)
-    const collected = augmented.collect(augmented)
-    expect(Object.keys(collected)).toEqual([])
+  it('collect method collects references', () => {
+    const builder = h`<h1 #arg>#body</h1>`
+    const built = builder()
+    const refs = builder.collect(built)
+    expect(Object.keys(refs)).toEqual(['arg', 'body'])
+    expect(refs.arg.nodeName).toEqual('H1')
+    expect(refs.body.nodeName).toEqual('#text')
+  })
+
+  it('handles collect without references', () => {
+    const builder = h`<h1>Static</h1>`
+    const built = builder()
+    expect(builder.collect(built)).toEqual({})
+  })
+
+  it('collect can be used with any clones', () => {
+    const builder = h`<h1 #a>Static</h1>`
+
+    const builds = [builder(), builder(), builder()]
+    const collectedRefKeys = builds.map(builder.collect).map(Object.keys)
+    expect(collectedRefKeys).toEqual([['a'], ['a'], ['a']])
   })
 })
