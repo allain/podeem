@@ -20,6 +20,7 @@ function extractRefName(node: Node): string | null {
 }
 
 type PathSegment = { skip: number, name: string }
+type RefMap = { [name: string]: Node }
 
 function extractRefPath(node: Node): PathSegment[] {
   const nextNode = createIterator(node)
@@ -64,7 +65,7 @@ export default function h(strings: TemplateStringsArray, ...args: any[]) {
   result.collect = function collect(node: Node) {
     const next = createIterator(node)
 
-    const refs: { [name: string]: Node } = {}
+    const refs: RefMap = {}
 
     for (let { skip, name } of refPath) {
       while (skip-- > 0) next()
