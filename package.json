@@ -1,6 +1,6 @@
 {
   "name": "podeem",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A small libary for writing high performance Web User Interfaces. ",
   "keywords": [],
   "main": "dist/podeem.min.js",
