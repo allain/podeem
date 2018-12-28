@@ -23,7 +23,7 @@ const extractPath = (root: Node, descendant: Node) => {
 }
 
 function extractCollectors(root: Node): { [name: string]: number[] } {
-  const iterator = document.createNodeIterator(root, NodeFilter.SHOW_ALL)
+  const iterator = document.createNodeIterator(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT)
 
   let collectors: Collectors = {}
 
@@ -55,16 +55,14 @@ const collector = (collectors: Collectors) =>
 const compilerTemplate = document.createElement('template')
 
 export default function h(strings: TemplateStringsArray, ...args: any[]) {
-  const template = String.raw(strings, ...args)
+  compilerTemplate.innerHTML = String.raw(strings, ...args)
     .replace(/\s+</g, '<')
     .replace(/>\s+/g, '>')
     .replace(/\n\s+/g, '<!-- -->')
 
-  compilerTemplate.innerHTML = template
   const content = compilerTemplate.content.firstChild as Node
 
   const result = () => content.cloneNode(true)
-
   result.collect = collector(extractCollectors(content))
   return result
 }
