@@ -54,7 +54,7 @@ const collector = (collectors: Collectors) =>
 
 const compilerTemplate = document.createElement('template')
 
-export default function h(strings: TemplateStringsArray, ...args: any[]) {
+function h(strings: TemplateStringsArray, ...args: any[]) {
   compilerTemplate.innerHTML = String.raw(strings, ...args)
     .replace(/\s+</g, '<')
     .replace(/>\s+/g, '>')
@@ -66,3 +66,5 @@ export default function h(strings: TemplateStringsArray, ...args: any[]) {
   result.collect = collector(extractCollectors(content))
   return result
 }
+
+export default h

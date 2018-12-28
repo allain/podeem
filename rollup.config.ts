@@ -17,7 +17,7 @@ const plugins = [
   minifyLiterals(),
 
   // Compile TypeScript files
-  typescript({ useTsconfigDeclarationDir: true, module: 'esnext' }),
+  typescript({ useTsconfigDeclarationDir: true }),
 
   // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
   commonjs(),
@@ -40,10 +40,9 @@ export default files.map(file => ({
   input: `src/${file}.ts`,
   output: {
     file: `dist/${file}.min.js`,
+    format: 'cjs',
     name: libraryName,
-    format: 'umd',
     sourcemap: false,
-    exports: 'named',
     extend: true
   },
 
