@@ -21,10 +21,10 @@ export default [
     plugins: [
       resolve(),
       commonjs(),
+      minifyliterals(),
       babel({
         exclude: 'node_modules/**'
       }),
-      minifyliterals(),
       terser()
     ]
   },
