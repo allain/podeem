@@ -1,9 +1,7 @@
-import h from "../src/podeem"
+import h from '../src/podeem'
 
-describe("podeem", () => {
-  it('exports a single function', () =>
-    expect(h).toBeInstanceOf(Function)
-  )
+describe('podeem', () => {
+  it('exports a single function', () => expect(h).toBeInstanceOf(Function))
 
   it('builds a Node factory function', () => {
     const builder = h`<h1>#Testing</h1>`
