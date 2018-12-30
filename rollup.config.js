@@ -16,7 +16,8 @@ export default [
     output: {
       file: pkg.browser,
       format: 'umd',
-      name: 'podeem'
+      name: 'podeem',
+      exports: 'named'
     },
     plugins: [
       resolve(),

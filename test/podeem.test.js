@@ -1,4 +1,4 @@
-import h from '../src/podeem'
+import { h, when } from '../src/podeem'
 
 describe('podeem', () => {
   it('exports a single function', () => expect(h).toBeInstanceOf(Function))
@@ -41,4 +41,6 @@ describe('podeem', () => {
     const collectedRefKeys = builds.map(build.collect).map(Object.keys)
     expect(collectedRefKeys).toEqual([['a'], ['a'], ['a']])
   })
+
+  it('exposes when function', () => expect(when).toBeInstanceOf(Function))
 })

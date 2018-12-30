@@ -1,9 +1,9 @@
 import buildCollector from './collectors/path-collector'
-// import skipCollector from './collectors/skip-collector'
+export { default as when } from './when'
 
 const compilerTemplate = document.createElement('template')
 
-function h (strings, ...args) {
+export function h (strings, ...args) {
   compilerTemplate.innerHTML = String.raw(strings, ...args)
     .replace(/\s+</g, '<')
     .replace(/>\s+/g, '>')
@@ -15,5 +15,3 @@ function h (strings, ...args) {
   result.collect = buildCollector(content)
   return result
 }
-
-export default h

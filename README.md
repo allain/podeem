@@ -7,21 +7,23 @@ Based on the excellent work in [stage0](https://github.com/Freak613/stage0).
 ### Usage
 
 ```js
-import h from 'podeem'
+import {h, when} from 'podeem'
 
 // Define the template
-const View = h`<div>
+const Demo = h`<div>
   <h1>#message</h1>
   <button #greet>Greet</button>
 </div>`
 
-const view = View() // create a DOM node using the template above
+const demo = Demo() // create a DOM node using the template above
 
-const { message, greet } = View.collect(view)
+const { message, greet } = Demo.collect(demo)
 message.nodeValue = 'Hello World'
-greet.__click = () => alert('Hello')
 
-document.body.appendChild(view)
+when('click', greet, e => message.nodeValue='Hello Again')
+// or: when.click(greet, e => message.nodeValue='Hello Again')
+
+document.body.appendChild(demo)
 ```
 
 ### Features
