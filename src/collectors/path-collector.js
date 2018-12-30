@@ -54,13 +54,18 @@ function extractCollectors (root) {
   return collectors
 }
 
-const buildCollector = collectors => node =>
-  Object.keys(collectors).reduce((result, name) => {
-    result[name] = collectors[name].reduce(
-      (currentNode, index) => currentNode.childNodes.item(index),
-      node
-    )
-    return result
-  }, {})
+const buildCollector = collectors => node => {
+  const result = {}
+
+  for (let name of Object.keys(collectors)) {
+    let currentNode = node
+    for (let index of collectors[name]) {
+      currentNode = currentNode.childNodes.item(index)
+    }
+    result[name] = currentNode
+  }
+
+  return result
+}
 
 export default template => buildCollector(extractCollectors(template))

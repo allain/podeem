@@ -1,5 +1,7 @@
 import buildCollector from './collectors/path-collector'
+
 export { default as when } from './when'
+export { default as reconciler } from './reconciler'
 
 const compilerTemplate = document.createElement('template')
 

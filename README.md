@@ -7,7 +7,7 @@ Based on the excellent work in [stage0](https://github.com/Freak613/stage0).
 ### Usage
 
 ```js
-import {h, when} from 'podeem'
+import {h, when, reconcile } from 'podeem'
 
 // Define the template
 const Demo = h`<div>
@@ -20,7 +20,7 @@ const demo = Demo() // create a DOM node using the template above
 const { message, greet } = Demo.collect(demo)
 message.nodeValue = 'Hello World'
 
-when('click', greet, e => message.nodeValue='Hello Again')
+when.click(greet, e => message.nodeValue='Hello Again')
 // or: when.click(greet, e => message.nodeValue='Hello Again')
 
 document.body.appendChild(demo)

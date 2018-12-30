@@ -1,4 +1,4 @@
-import { h, when } from '../src/podeem'
+import { h, when, reconciler } from '../src/podeem'
 
 describe('podeem', () => {
   it('exports a single function', () => expect(h).toBeInstanceOf(Function))
@@ -43,4 +43,6 @@ describe('podeem', () => {
   })
 
   it('exposes when function', () => expect(when).toBeInstanceOf(Function))
+  it('exposes reconcile function', () =>
+    expect(reconciler).toBeInstanceOf(Function))
 })

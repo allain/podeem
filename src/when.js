@@ -10,13 +10,13 @@ const nativeToSyntheticEvent = (event, name) => {
   }
 }
 
-const CONFIGURED_SYNTHETIC_EVENTS = new Set()
+const CONFIGURED_SYNTHETIC_EVENTS = {}
 function when (name, target, handler) {
-  if (!CONFIGURED_SYNTHETIC_EVENTS.has(name)) {
+  if (!CONFIGURED_SYNTHETIC_EVENTS[name]) {
     document.addEventListener(name, event =>
       nativeToSyntheticEvent(event, name)
     )
-    CONFIGURED_SYNTHETIC_EVENTS.add(name)
+    CONFIGURED_SYNTHETIC_EVENTS[name] = true
   }
 
   target[`__${name}`] = handler
