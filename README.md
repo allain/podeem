@@ -25,6 +25,3 @@ when.click(greet, e => message.nodeValue='Hello Again')
 
 document.body.appendChild(demo)
 ```
-
-### Features
-
