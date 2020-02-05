@@ -1,0 +1,14 @@
+{
+  "name": "example-counter",
+  "version": "0.1.0",
+  "description": "A Simple Counter Example using Podeem",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "podeem": "0.0.2"
+  }
+}

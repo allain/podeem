@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<body>
+  <script src="./node_modules/podeem/dist/podeem.umd.js"></script>
+  <script>
+    const { h, reconcile, when } = podeem
+    // Define the template
+    const Counter = h`<div>
+        <h1>Count: <span>#count<span></h1>
+        <button #btn>Click Me</button>
+    </div>`
+
+    const counter = Counter() // create a DOM node using the template above
+
+    const { count, btn } = Counter.collect(counter)
+    count.nodeValue = '0'
+
+    when.click(btn, e => (count.nodeValue = parseInt(count.nodeValue, 10) + 1))
+
+    document.body.appendChild(counter)
+  </script>
+</body>
